@@ -4,7 +4,7 @@
 #include <cstdint> 
 #include <string>
 #include <unordered_map>
-#include "Framebuffer.h"
+#include "PixelMaps.h"
 
 #define 
 
@@ -29,7 +29,7 @@ class chip8
         uint8_t ram[4096]
 
         //Graphics emulation
-        Framebuffer screen;
+        PixelMap screen;
 
         //Keypad
         Keypad Keypad
