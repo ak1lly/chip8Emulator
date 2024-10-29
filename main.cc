@@ -1,6 +1,8 @@
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <cstdint>
 #include <iostream>
+#include "Keypad.h"
+
 
 using namespace std;
 
@@ -64,7 +66,23 @@ int main() {
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(20000); // Wait for 2 seconds
+    Keypad keypad = Keypad();
+
+    while (true)
+    {
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            if (event.type == SDL_QUIT)
+            {
+                break;
+            }
+            if (event.type == SDL_KEYDOWN){
+                keypad.handle_key_down(event.key.keysym.sym);
+            }
+        }
+    }
+
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

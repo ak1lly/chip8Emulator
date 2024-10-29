@@ -6,8 +6,6 @@
 #include <unordered_map>
 #include "PixelMaps.h"
 
-#define 
-
 class chip8 
 {
     public:

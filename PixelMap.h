@@ -14,7 +14,7 @@ class PixelMap
 {
     public:
         PixelMap();
-        bool updateBuffer();
+        bool updateBuffer(int, int, int);
         uint8_t* getBuffer();
     private:
         uint8_t buffer[MAXHEIGHT * MAXWIDTH];
