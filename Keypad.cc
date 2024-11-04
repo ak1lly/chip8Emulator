@@ -28,7 +28,8 @@ void Keypad::handle_key_down(uint8_t eventKey){
     for (int i=0; i < sizeof(SDL_Keymap); i++){
         if(eventKey == SDL_Keymap[i]){
             keypad[i] = 1;
-            std::cout<<"Pressed key: "<<i<<"ARRAY LOGGING"<<keypad<<std::endl;
+            std::cout<<"Pressed key: "<<i<<std::endl;
+            print_array(keypad, 16);
         }
     }
 }
@@ -37,8 +38,17 @@ void Keypad::handle_key_up(uint8_t eventKey){
     for (int i=0; i < sizeof(SDL_Keymap); i++){
         if(eventKey == SDL_Keymap[i]){
             keypad[i] = 0;
-            std::cout<<"Released key: "<<i<<"ARRAY LOGGING"<<keypad<<std::endl;
+            std::cout<<"Released key: "<<i<<std::endl;
+            print_array(keypad, 16);
         }
     }
 }
+
+void Keypad::print_array(const int arr[], int size){
+    for (int i = 0; i < size; ++i) {
+        std::cout << arr[i] << " ";
+    }
+    std::cout << std::endl;
+}
+
 

@@ -2,9 +2,13 @@
 #include <cstdint>
 #include <iostream>
 #include "Keypad.h"
+#include "PixelMap.h"
 
 
 using namespace std;
+
+void runSimulationCycle(PixelMap, int, int);
+void updateRenderer(SDL_Texture* , SDL_Renderer* , const uint32_t*);
 
 int main() {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -39,32 +43,18 @@ int main() {
     SDL_RenderClear(renderer);
     SDL_RenderPresent(renderer);
 
-    uint8_t screen[32*64];
-    memset(screen, 0, sizeof(screen));
-
-    screen[16 * 32] = 1;
+    PixelMap screen;
 
     //this is how we interact with the screen (using PixelMap)
-    uint32_t pixels[32 * 64];
-    for (int i = 0; i < 32 * 64; i++)
-    {
-        if (screen[i] == 0)
-        {
-            pixels[i] = 0xFF000000;
-        }
-        else
-        {
-            pixels[i] = 0xFFFFFFFF;
+
+    for(int i = 0; i<MAXWIDTH; i++){
+        for(int j = 0; j<MAXHEIGHT; j++){
+            runSimulationCycle(screen, i, j);
+            screen.renderPixels();
+            screen.printBuffer();
+            updateRenderer(texture, renderer, screen.getPixels());
         }
     }
-
-    SDL_UpdateTexture(texture, NULL, pixels, 64 * sizeof(uint32_t));
-
-    //update render with new texture
-
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
-    SDL_RenderPresent(renderer);
 
     Keypad keypad = Keypad();
 
@@ -75,10 +65,13 @@ int main() {
         {
             if (event.type == SDL_QUIT)
             {
-                break;
+                exit(1);
             }
             if (event.type == SDL_KEYDOWN){
                 keypad.handle_key_down(event.key.keysym.sym);
+            }
+            if (event.type == SDL_KEYUP){
+                keypad.handle_key_up(event.key.keysym.sym);
             }
         }
     }
@@ -89,4 +82,25 @@ int main() {
     SDL_Quit();
 
     return 0;
+}
+
+
+void runSimulationCycle(PixelMap s, int i, int j){
+    s.resetBuffer();
+    s.updateBuffer(i, j, 1);
+}
+
+void updateRenderer(SDL_Texture* tex, SDL_Renderer* ren, const uint32_t* map){
+    int width, height;
+    SDL_QueryTexture(tex, NULL, NULL, &width, &height);
+
+    int pitch = width * sizeof(uint32_t);
+
+    SDL_UpdateTexture(tex, NULL, map, pitch);
+
+    //update render with new texture
+
+    SDL_RenderClear(ren);
+    SDL_RenderCopy(ren, tex, NULL, NULL);
+    SDL_RenderPresent(ren);
 }

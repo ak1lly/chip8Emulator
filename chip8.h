@@ -4,7 +4,7 @@
 #include <cstdint> 
 #include <string>
 #include <unordered_map>
-#include "PixelMaps.h"
+#include "PixelMap.h"
 
 class chip8 
 {

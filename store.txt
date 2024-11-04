@@ -1,0 +1,60 @@
+// comp cmd
+// g++ -o test main.cc Keypad.h Keypad.cc PixelMap.h PixelMap.cc `sdl2-config --cflags --libs`
+
+// while (true)
+// {
+//     SDL_Event event;
+//     while (SDL_PollEvent(&event))
+//     {
+//         if (event.type == SDL_QUIT)
+//         {
+//             exit(1);
+//         }
+//         if (event.type == SDL_KEYDOWN){
+//             if(event.key.keysym.sym == SDLK_w){
+//                 if (reinitPix(curcoor[0], curcoor[1], 0, -1, renderer, texture)) curcoor[1] -= 1;
+//             }
+//             if(event.key.keysym.sym == SDLK_a){
+//                 if (reinitPix(curcoor[0], curcoor[1], -1, 0, renderer, texture)) curcoor[0] -= 1;
+//             }
+//             if(event.key.keysym.sym == SDLK_s){
+//                 if (reinitPix(curcoor[0], curcoor[1], 0, 1, renderer, texture)) curcoor[1] += 1;
+//             }
+//             if(event.key.keysym.sym == SDLK_d){
+//                 if (reinitPix(curcoor[0], curcoor[1], 1, 0, renderer, texture)) curcoor[0] += 1;
+//             }
+//         }
+//         // if (event.type == SDL_KEYUP){
+
+//         // }
+//     }
+// }
+
+
+bool reinitPix(int curx, int cury, int movx, int movy, 
+                SDL_Renderer* ren, SDL_Texture* tex){
+
+    if(!inRange((curx + movx), (cury + movy), 32, 64)){
+        return false;
+    }
+  
+    //this is how we interact with the screen (using PixelMap)
+    uint32_t pixels[32 * 64];
+    memset(pixels, 0xFF000000, sizeof(pixels));
+
+    pixels[(cury + movy) * 64 + (curx + movx)] = 0xFFFFFFFF;
+
+    SDL_UpdateTexture(tex, NULL, pixels, 64 * sizeof(uint32_t));
+
+    //update render with new texture
+
+    SDL_RenderClear(ren);
+    SDL_RenderCopy(ren, tex, NULL, NULL);
+    SDL_RenderPresent(ren);
+
+    return true;
+}
+
+bool inRange(int x, int y, int rows, int cols){
+    return (x >= 0 && x < cols) && (y >= 0 && y < rows);
+}

@@ -12,6 +12,9 @@ class Keypad
         bool input();
         void handle_key_down(uint8_t);
         void handle_key_up(uint8_t);
+
+        //helper for logging
+        void print_array(const int*, int);
     protected:
     private:
         int keypad[NUM_KEYS];

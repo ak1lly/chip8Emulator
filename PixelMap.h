@@ -1,7 +1,7 @@
 #ifndef PIXELMAP_H
 #define PIXELMAP_H
 
-#include <cstdint> 
+#include <cstdint>
 
 #define MAXHEIGHT 32
 #define MAXWIDTH 64
@@ -13,11 +13,30 @@
 class PixelMap 
 {
     public:
+        const int operator[](int);
+
         PixelMap();
+
+        //buffer arr work
         bool updateBuffer(int, int, int);
-        uint8_t* getBuffer();
+        void resetBuffer();
+
+        //pixel work
+        void renderPixels();
+        const uint32_t* getPixels();
+        void resetPixels();
+
+        void clearScreen();
+
+        const int* getBuffer();
+
+        void printBuffer();
+
+        void runSimulation();
     private:
-        uint8_t buffer[MAXHEIGHT * MAXWIDTH];
+        int buffer[MAXHEIGHT * MAXWIDTH];
+        uint32_t pixels[MAXHEIGHT * MAXWIDTH];
+
 };
 
 #endif
