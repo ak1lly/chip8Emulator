@@ -19,6 +19,11 @@ uint8_t SDL_Keymap[NUM_KEYS] = {
         SDLK_f,
         SDLK_v,
     };
+    
+
+const int Keypad::operator[](int i){
+    return keypad[i];
+}
 
 Keypad::Keypad(){
     memset(keypad, 0, sizeof(keypad));

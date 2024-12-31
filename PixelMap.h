@@ -18,6 +18,7 @@ class PixelMap
         PixelMap();
 
         //buffer arr work
+        bool updateBuffer(int, int);
         bool updateBuffer(int, int, int);
         void resetBuffer();
 
@@ -31,8 +32,6 @@ class PixelMap
         const int* getBuffer();
 
         void printBuffer();
-
-        void runSimulation();
     private:
         int buffer[MAXHEIGHT * MAXWIDTH];
         uint32_t pixels[MAXHEIGHT * MAXWIDTH];

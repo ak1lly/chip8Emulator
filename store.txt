@@ -57,4 +57,19 @@ bool reinitPix(int curx, int cury, int movx, int movy,
 
 bool inRange(int x, int y, int rows, int cols){
     return (x >= 0 && x < cols) && (y >= 0 && y < rows);
+
+
+void PixelMap::runSimulation(){
+    for(int i = 0; i<MAXWIDTH; i++){
+        for(int j = 0; j<MAXHEIGHT; j++){
+            updateBuffer(i, j, 1);
+            memset(buffer, 0, sizeof(buffer));
+        }
+    }
+}
+}
+
+void runSimulationCycle(PixelMap* s, int x, int y){
+    s->resetBuffer();
+    s->updateBuffer(x, y, 1);
 }

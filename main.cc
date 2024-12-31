@@ -1,4 +1,6 @@
 #include <SDL2/SDL.h>
+#include <thread>
+#include <chrono>
 #include <cstdint>
 #include <iostream>
 #include "Keypad.h"
@@ -7,7 +9,7 @@
 
 using namespace std;
 
-void runSimulationCycle(PixelMap, int, int);
+void runSimulationCycle(PixelMap*, int, int);
 void updateRenderer(SDL_Texture* , SDL_Renderer* , const uint32_t*);
 
 int main() {
@@ -17,7 +19,7 @@ int main() {
         exit(1);
     }
 
-    SDL_Window* window = SDL_CreateWindow("tester", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, 0);
+    SDL_Window* window = SDL_CreateWindow("CHIP8 Emulator", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 320, 0);
     if (window == NULL) {
         cout<< "SDL_CreateWindow Error: %s\n"<< SDL_GetError()<< endl;
         SDL_Quit();
@@ -47,12 +49,13 @@ int main() {
 
     //this is how we interact with the screen (using PixelMap)
 
-    for(int i = 0; i<MAXWIDTH; i++){
-        for(int j = 0; j<MAXHEIGHT; j++){
-            runSimulationCycle(screen, i, j);
+    for(int i = 0; i<MAXHEIGHT; i++){
+        for(int j = 0; j<MAXWIDTH; j++){
+            runSimulationCycle(&screen, j, i);
             screen.renderPixels();
             screen.printBuffer();
             updateRenderer(texture, renderer, screen.getPixels());
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
     }
 
@@ -84,11 +87,6 @@ int main() {
     return 0;
 }
 
-
-void runSimulationCycle(PixelMap s, int i, int j){
-    s.resetBuffer();
-    s.updateBuffer(i, j, 1);
-}
 
 void updateRenderer(SDL_Texture* tex, SDL_Renderer* ren, const uint32_t* map){
     int width, height;

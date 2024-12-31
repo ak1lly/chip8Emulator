@@ -12,9 +12,17 @@ PixelMap::PixelMap(){
     memset(pixels, 0xFF000000, sizeof(pixels));
 }
 
+bool PixelMap::updateBuffer(int index, int val){
+    if ((index >= 0 && index < MAXWIDTH*MAXHEIGHT)){
+        buffer[index] = val;
+        return true;
+    }
+    return false;
+}
+
 bool PixelMap::updateBuffer(int x, int y, int val){
     if ((x >= 0 && x < MAXWIDTH) && (y >= 0 && y < MAXHEIGHT)){
-        buffer[x * MAXWIDTH + y] = val;
+        buffer[y * MAXWIDTH + x] = val;
         return true;
     }
     return false;
@@ -59,12 +67,3 @@ void PixelMap::printBuffer(){
     }
 }
 
-
-void PixelMap::runSimulation(){
-    for(int i = 0; i<MAXWIDTH; i++){
-        for(int j = 0; j<MAXHEIGHT; j++){
-            updateBuffer(i, j, 1);
-            memset(buffer, 0, sizeof(buffer));
-        }
-    }
-}

@@ -2,12 +2,14 @@
 #define KEYPAD_H
 
 #include <cstdint> 
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #define NUM_KEYS 16
 
 class Keypad 
 {
     public:
+        const int operator[](int);
+
         Keypad();
         bool input();
         void handle_key_down(uint8_t);
