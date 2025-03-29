@@ -13,8 +13,8 @@ void chip8_init(Chip8 *chip8) {
     memset(chip8->V, 0, sizeof(chip8->V));
     memset(chip8->stack, 0, sizeof(chip8->stack));
     memset(chip8->display, 0, sizeof(chip8->display));
-    chip8->display[120] = 1;
-    chip8->draw_flag = 1;
+    // chip8->display[120] = 1;
+    chip8->draw_flag = 0;
 
     // Initialize display and input
     interface_init(&chip8->interface);
@@ -46,6 +46,7 @@ void load_rom(Chip8 *chip8, const char *filename) {
     fclose(file);
 }
 
+//works
 void draw(Chip8* chip8)
 {		
 	if (chip8->draw_flag == 1)
@@ -84,6 +85,8 @@ void execute_cycle(Chip8 *chip8){
                 case 0x00EE:
                     // 0x00EE - Return from subroutine
                     // TODO: Pop stack and set PC
+                    chip8->sp--;
+				    chip8->pc = chip8->stack[chip8->sp];
                     break;
 
                 default:
@@ -140,31 +143,31 @@ void execute_cycle(Chip8 *chip8){
         // 0x8XY_ - ALU operations
         case 0x8000:
             switch (opcode & 0x000F) {
-                case 0x0:
+                case 0x0000:
                     // 0x8XY0 - Set VX = VY
                     // TODO: Set VX to VY
                     chip8->V[X] = chip8->V[Y]; 
                     break;
                 
-                case 0x1:
+                case 0x0001:
                     // 0x8XY1 - Set VX = VX OR VY
                     // TODO: Bitwise OR
                     chip8->V[X] |= chip8->V[Y]; 
                     break;
 
-                case 0x2:
+                case 0x0002:
                     // 0x8XY2 - Set VX = VX AND VY
                     // TODO: Bitwise AND
                     chip8->V[X] &= chip8->V[Y]; 
                     break;
 
-                case 0x3:
+                case 0x0003:
                     // 0x8XY3 - Set VX = VX XOR VY
                     // TODO: Bitwise XOR
                     chip8->V[X] ^= chip8->V[Y];
                     break;
 
-                case 0x4:
+                case 0x0004:
                     // 0x8XY4 - Add VY to VX (set VF for carry)
                     // TODO: Add with carry
                     int carry = (int)(chip8->V[X]) + (int)(chip8->V[Y]);
@@ -172,28 +175,28 @@ void execute_cycle(Chip8 *chip8){
                     chip8->V[X] = carry & 0xFF;
                     break;
 
-                case 0x5:
+                case 0x0005:
                     // 0x8XY5 - Subtract VY from VX (set VF for NOT borrow)
                     // TODO: Subtract with borrow
                     chip8->V[0xF] = (chip8->V[X]>chip8->V[Y]) ? 1 : 0;
                     chip8->V[X] -= chip8->V[Y];
                     break;
 
-                case 0x6:
+                case 0x0006:
                     // 0x8XY6 - Right shift VX (set VF for least significant bit)
                     // TODO: Right shift VX
                     chip8->V[0xF] = chip8->V[X] & 1;
 				    chip8->V[X] >>= 1;
                     break;
 
-                case 0x7:
+                case 0x0007:
                     // 0x8XY7 - Set VX = VY - VX (set VF for NOT borrow)
                     // TODO: Subtract reverse
                     chip8->V[0xF] = (chip8->V[Y]>chip8->V[X]) ? 1 : 0;
                     chip8->V[X] = chip8->V[Y] - chip8->V[X];
                     break;
 
-                case 0xE:
+                case 0x000E:
                     // 0x8XYE - Left shift VX (set VF for most significant bit)
                     // TODO: Left shift VX
                     chip8->V[0xF] = chip8->V[X] >> 7;
@@ -256,13 +259,15 @@ void execute_cycle(Chip8 *chip8){
                 case 0x9E:
                     // 0xEX9E - Skip next instruction if key in VX is pressed
                     // TODO: Check if key is pressed
-                    if(chip8->interface.keypad[chip8->V[X]] != 0) chip8->pc+=2;
+                    if(chip8->interface.keypad[chip8->V[X]] != 0){
+                        chip8->pc+=2;}
                     break;
 
                 case 0xA1:
                     // 0xEXA1 - Skip next instruction if key in VX is NOT pressed
                     // TODO: Check if key is NOT pressed
-                    if(chip8->interface.keypad[chip8->V[X]] == 0) chip8->pc+=2;
+                    if(chip8->interface.keypad[chip8->V[X]] == 0){
+                        chip8->pc+=2;}
                     break;
             }
             break;

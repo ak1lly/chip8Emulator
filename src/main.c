@@ -14,6 +14,7 @@ int main(int argc, char **argv) {
     chip8_init(&chip8);  // Initialize the CHIP-8 system
 
     load_rom(&chip8, argv[1]);  // Load the ROM
+    int32_t speed=5;
 
     // Start the emulator loop
     while (1) {
@@ -22,8 +23,14 @@ int main(int argc, char **argv) {
 
         draw(&chip8);  // Draw to the screen if necessary
 
-        // Simple delay to maintain the emulator's speed
-        usleep(1000);  // 1 ms delay
+        if(speed<0)
+		{
+			speed = 0;
+		}
+		else
+		{
+			SDL_Delay(speed);
+		}
 
         if (chip8.sound_timer > 0) {
             // Add sound functionality here if needed
